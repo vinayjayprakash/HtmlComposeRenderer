@@ -100,7 +100,7 @@ private fun DemoScreen() {
             .padding(16.dp),
     ) {
         HtmlText(
-            html = sampleHtml,
+            htmlString = sampleHtml,
             style = customHtmlStyle,
             onLinkClick = { url -> uriHandler.openUri(url) },
         )

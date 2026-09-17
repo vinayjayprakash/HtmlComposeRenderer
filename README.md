@@ -12,7 +12,7 @@ Unknown tags fall back to rendering their text content inline instead of failing
 
 ## Features
 
-- Pass an HTML string to `HtmlText(html = ...)` and get back real Compose `Text`/`Row`/`Column`
+- Pass an HTML string to `HtmlText(htmlString = ...)` and get back real Compose `Text`/`Row`/`Column`
   content — fully themeable, accessible, and measured like any other Compose UI.
 - Per-tag styling via `HtmlStyleConfig`: font size/weight/color for bold/italic/underline/links
   and headings, independently of every other tag.
@@ -160,9 +160,9 @@ classDiagram
 
     class HtmlText {
         <<composable function>>
-        +HtmlText(html, modifier, style, onLinkClick, parser)
+        +HtmlText(htmlString, modifier, style, onLinkClick, parser)
     }
-    HtmlText --> HtmlParser : parses html
+    HtmlText --> HtmlParser : parses htmlString
     HtmlText --> HtmlBlockRenderer : renders parsed tree
     HtmlText --> HtmlStyleConfig
 ```
@@ -224,7 +224,7 @@ val customStyle = HtmlStyleConfig(
 )
 
 HtmlText(
-    html = "<p>Hello <b>world</b></p><ul><li>One</li><li>Two</li></ul>",
+    htmlString = "<p>Hello <b>world</b></p><ul><li>One</li><li>Two</li></ul>",
     style = customStyle,
     onLinkClick = { url -> /* open it, e.g. via LocalUriHandler */ },
 )

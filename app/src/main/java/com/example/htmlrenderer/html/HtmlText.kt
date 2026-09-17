@@ -28,13 +28,13 @@ private val defaultHtmlParser: HtmlParser = TagSoupHtmlParser()
  */
 @Composable
 fun HtmlText(
-    html: String,
+    htmlString: String,
     modifier: Modifier = Modifier,
     style: HtmlStyleConfig = HtmlStyleConfig(),
     onLinkClick: (String) -> Unit = {},
     parser: HtmlParser = defaultHtmlParser,
 ) {
-    val nodes = remember(html, parser) { parser.parse(html) }
+    val nodes = remember(htmlString, parser) { parser.parse(htmlString) }
     Column(modifier = modifier) {
         HtmlBlockRenderer.RenderAll(nodes, HtmlRenderContext(style, onLinkClick))
     }
