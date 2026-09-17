@@ -50,7 +50,7 @@ interface rather than a specific parsing library directly (Dependency Inversion)
 library can be swapped by passing a different `parser` argument.
 
 ### UML class diagram
-[README.md](../VideoBlocker/README.md)
+
 ```mermaid
 classDiagram
     class HtmlNode {
