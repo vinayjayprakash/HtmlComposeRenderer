@@ -47,7 +47,6 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.activity:activity-compose:1.9.0")
     implementation("androidx.core:core-ktx:1.13.1")
-    implementation("org.jsoup:jsoup:1.17.2")
     implementation("org.ccil.cowan.tagsoup:tagsoup:1.2.1")
 
     debugImplementation("androidx.compose.ui:ui-tooling")

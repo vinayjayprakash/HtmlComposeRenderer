@@ -74,7 +74,6 @@ class TagSoupHtmlParserTest {
             listOf("This is a ", "b", " word, an ", "i", " word, and an ", "u", " word."),
             nodes.map { if (it is HtmlNode.Element) it.tag else (it as HtmlNode.Text).value },
         )
-        assertEquals(JsoupHtmlParser().parse(html), nodes)
     }
 
     @Test
@@ -100,7 +99,6 @@ class TagSoupHtmlParserTest {
         val paragraph = parser.parse(html).single() as HtmlNode.Element
         val tags = paragraph.children.filterIsInstance<HtmlNode.Element>().map { it.tag }
         assertEquals(listOf("s", "strike", "del"), tags)
-        assertEquals(JsoupHtmlParser().parse(html), parser.parse(html))
     }
 
     @Test
@@ -111,7 +109,6 @@ class TagSoupHtmlParserTest {
         assertEquals(listOf("sub", "sup"), elements.map { it.tag })
         assertEquals("2", (elements[0].children.single() as HtmlNode.Text).value)
         assertEquals("2", (elements[1].children.single() as HtmlNode.Text).value)
-        assertEquals(JsoupHtmlParser().parse(html), parser.parse(html))
     }
 
     @Test
@@ -125,7 +122,7 @@ class TagSoupHtmlParserTest {
     }
 
     @Test
-    fun `matches JsoupHtmlParser output for the full supported-tag sample`() {
+    fun `parses the full supported-tag sample into the expected structure`() {
         val html = """
             <h1>Welcome</h1>
             <p>This is a <b>bold</b> word, an <i>italic</i> word, and an <u>underlined</u> word.</p>
@@ -148,17 +145,33 @@ class TagSoupHtmlParserTest {
             </ol>
         """.trimIndent()
 
+        val top = parser.parse(html).map { it.normalized() }.filterIsInstance<HtmlNode.Element>()
+        assertEquals(listOf("h1", "p", "p", "h2", "ul", "h3", "ol"), top.map { it.tag })
+
+        assertEquals("Welcome", (top[0].children.single() as HtmlNode.Text).value)
+
         assertEquals(
-            JsoupHtmlParser().parse(html).map { it.normalized() },
-            parser.parse(html).map { it.normalized() },
+            listOf("This is a ", "b", " word, an ", "i", " word, and an ", "u", " word."),
+            top[1].children.map { if (it is HtmlNode.Element) it.tag else (it as HtmlNode.Text).value },
         )
+
+        val link = top[2].children.filterIsInstance<HtmlNode.Element>().single { it.tag == "a" }
+        assertEquals("https://www.anthropic.com", link.attributes["href"])
+        assertEquals(1, top[2].children.filterIsInstance<HtmlNode.Element>().count { it.tag == "br" })
+
+        val unorderedItems = top[4].children.filterIsInstance<HtmlNode.Element>()
+        assertEquals(3, unorderedItems.size)
+        val nestedList = unorderedItems[2].children.filterIsInstance<HtmlNode.Element>().single { it.tag == "ul" }
+        assertEquals(2, nestedList.children.filterIsInstance<HtmlNode.Element>().size)
+
+        val orderedItems = top[6].children.filterIsInstance<HtmlNode.Element>()
+        assertEquals(2, orderedItems.size)
     }
 
     /**
-     * Drops whitespace-only text nodes recursively. Jsoup and TagSoup place a different amount
-     * of insignificant whitespace between block tags (a collapsed single space vs. the raw
-     * newline/indentation) - [HtmlBlockRenderer][com.example.htmlrenderer.html.render.HtmlBlockRenderer]
-     * already ignores blank text nodes, so this reflects the tree the renderer actually sees.
+     * Drops whitespace-only text nodes recursively - TagSoup preserves the raw newline/indentation
+     * between block tags as its own text node, but [HtmlBlockRenderer][com.example.htmlrenderer.html.render.HtmlBlockRenderer]
+     * ignores blank text nodes, so this reflects the tree the renderer actually sees.
      */
     private fun HtmlNode.normalized(): HtmlNode = when (this) {
         is HtmlNode.Text -> this

@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.example.htmlrenderer.html.parser.HtmlParser
-import com.example.htmlrenderer.html.parser.JsoupHtmlParser
 import com.example.htmlrenderer.html.parser.TagSoupHtmlParser
 import com.example.htmlrenderer.html.render.HtmlBlockRenderer
 import com.example.htmlrenderer.html.render.HtmlRenderContext
@@ -20,8 +19,7 @@ private val defaultHtmlParser: HtmlParser = TagSoupHtmlParser()
  *
  * This composable only wires three independent layers together:
  * - [parser] turns the HTML string into a neutral [com.example.htmlrenderer.html.model.HtmlNode]
- *   tree ([TagSoupHtmlParser] by default - swap it for any other [HtmlParser] implementation,
- *   e.g. [JsoupHtmlParser]).
+ *   tree ([TagSoupHtmlParser] by default - swap it for any other [HtmlParser] implementation).
  * - [style] configures how each tag looks.
  * - [com.example.htmlrenderer.html.render.HtmlBlockRenderer] walks the tree and draws it,
  *   dispatching each tag to a registered handler (see `BlockTagHandlers.kt` / `InlineTagHandlers.kt`).

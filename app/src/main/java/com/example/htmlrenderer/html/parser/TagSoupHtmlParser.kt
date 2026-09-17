@@ -12,11 +12,11 @@ import org.xml.sax.helpers.DefaultHandler
  * allowed to import `org.ccil.cowan.tagsoup.*` / `org.xml.sax.*` - everything else works with the
  * neutral [HtmlNode] model.
  *
- * Unlike Jsoup, TagSoup only exposes a streaming SAX [org.xml.sax.ContentHandler] API rather than
- * a DOM - it never hands back a tree to walk. [TreeBuildingHandler] reconstructs one from the SAX
- * callbacks using a stack of in-progress elements. TagSoup also always normalizes its input into
- * a full document (`<html><head/><body>...</body></html>`), even for a bare fragment, so this
- * parser returns only `<body>`'s children to match [JsoupHtmlParser]'s fragment behavior.
+ * TagSoup only exposes a streaming SAX [org.xml.sax.ContentHandler] API rather than a DOM - it
+ * never hands back a tree to walk. [TreeBuildingHandler] reconstructs one from the SAX callbacks
+ * using a stack of in-progress elements. TagSoup also always normalizes its input into a full
+ * document (`<html><head/><body>...</body></html>`), even for a bare fragment, so this parser
+ * returns only `<body>`'s children to produce a plain fragment tree.
  */
 class TagSoupHtmlParser : HtmlParser {
     override fun parse(html: String): List<HtmlNode> {
@@ -24,7 +24,7 @@ class TagSoupHtmlParser : HtmlParser {
         val reader = TagSoupSaxParser()
         // TagSoup's schema otherwise injects default attribute values that were never in the
         // source markup (e.g. shape="rect" on <a>, clear="none" on <br>) - suppress that so the
-        // parsed tree reflects only what was actually authored, matching JsoupHtmlParser.
+        // parsed tree reflects only what was actually authored in the source HTML.
         reader.setFeature("http://www.ccil.org/~cowan/tagsoup/features/default-attributes", false)
         reader.contentHandler = handler
         reader.parse(InputSource(StringReader(html)))
@@ -33,9 +33,8 @@ class TagSoupHtmlParser : HtmlParser {
 }
 
 /** Matches HTML's normal whitespace-collapsing rendering rule: a run of whitespace (including a
- * newline from source formatting) becomes a single space. Jsoup applies the same normalization
- * internally via `TextNode.text()`; TagSoup's raw SAX `characters()` callback does not, so it is
- * done here instead. */
+ * newline from source formatting) becomes a single space. TagSoup's raw SAX `characters()`
+ * callback hands back text verbatim, so that collapsing is done here instead. */
 private val whitespaceRun = Regex("\\s+")
 
 private class TreeBuildingHandler : DefaultHandler() {
