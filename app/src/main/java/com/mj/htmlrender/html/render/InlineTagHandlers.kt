@@ -1,6 +1,7 @@
 package com.mj.htmlrender.html.render
 
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.withStyle
 import com.mj.htmlrender.html.model.HtmlNode
 import com.mj.htmlrender.html.style.HtmlStyleConfig
@@ -8,66 +9,60 @@ import com.mj.htmlrender.html.style.HtmlStyleConfig
 internal const val LINK_ANNOTATION_TAG = "URL"
 
 /**
- * Strategy for rendering one inline element tag into an [AnnotatedString.Builder] (the receiver).
+ * Strategy for rendering one inline element tag into an [AnnotatedString.Builder]. Implement
+ * [render] in an object (or class) and register it in [defaultInlineTagHandlers].
  * [renderChildren] recurses back into [HtmlInlineRenderer] so a handler never needs to know how
  * its own children get rendered - it only wraps them in the right style.
  */
-internal typealias InlineTagHandler = AnnotatedString.Builder.(
-    element: HtmlNode.Element,
-    style: HtmlStyleConfig,
-    renderChildren: (List<HtmlNode>) -> Unit,
-) -> Unit
-
-private val boldTagHandler: InlineTagHandler = { element, style, renderChildren ->
-    withStyle(style.bold) { renderChildren(element.children) }
+internal interface InlineTagHandler {
+    fun render(
+        builder: AnnotatedString.Builder,
+        element: HtmlNode.Element,
+        style: HtmlStyleConfig,
+        renderChildren: (List<HtmlNode>) -> Unit,
+    )
 }
 
-private val italicTagHandler: InlineTagHandler = { element, style, renderChildren ->
-    withStyle(style.italic) { renderChildren(element.children) }
+/** Covers every purely cosmetic inline tag (bold, italic, underline, strikethrough, subscript,
+ * superscript): wrap the children in a single [SpanStyle] picked out of the config. */
+private class StyledTagHandler(private val selectStyle: (HtmlStyleConfig) -> SpanStyle) : InlineTagHandler {
+    override fun render(builder: AnnotatedString.Builder, element: HtmlNode.Element, style: HtmlStyleConfig, renderChildren: (List<HtmlNode>) -> Unit) {
+        builder.withStyle(selectStyle(style)) { renderChildren(element.children) }
+    }
 }
 
-private val underlineTagHandler: InlineTagHandler = { element, style, renderChildren ->
-    withStyle(style.underline) { renderChildren(element.children) }
+private object LineBreakTagHandler : InlineTagHandler {
+    override fun render(builder: AnnotatedString.Builder, element: HtmlNode.Element, style: HtmlStyleConfig, renderChildren: (List<HtmlNode>) -> Unit) {
+        builder.append("\n")
+    }
 }
 
-private val strikethroughTagHandler: InlineTagHandler = { element, style, renderChildren ->
-    withStyle(style.strikethrough) { renderChildren(element.children) }
-}
-
-private val subscriptTagHandler: InlineTagHandler = { element, style, renderChildren ->
-    withStyle(style.subscript) { renderChildren(element.children) }
-}
-
-private val superscriptTagHandler: InlineTagHandler = { element, style, renderChildren ->
-    withStyle(style.superscript) { renderChildren(element.children) }
-}
-
-private val lineBreakTagHandler: InlineTagHandler = { _, _, _ -> append("\n") }
-
-private val linkTagHandler: InlineTagHandler = { element, style, renderChildren ->
-    val href = element.attributes["href"].orEmpty()
-    val start = length
-    withStyle(style.link) { renderChildren(element.children) }
-    addStringAnnotation(tag = LINK_ANNOTATION_TAG, annotation = href, start = start, end = length)
+private object LinkTagHandler : InlineTagHandler {
+    override fun render(builder: AnnotatedString.Builder, element: HtmlNode.Element, style: HtmlStyleConfig, renderChildren: (List<HtmlNode>) -> Unit) {
+        val href = element.attributes["href"].orEmpty()
+        val start = builder.length
+        builder.withStyle(style.link) { renderChildren(element.children) }
+        builder.addStringAnnotation(tag = LINK_ANNOTATION_TAG, annotation = href, start = start, end = builder.length)
+    }
 }
 
 /**
- * Supported inline tags. Adding a new one (e.g. `<sup>`) means adding one handler and one entry
- * here - [HtmlInlineRenderer] itself never has to change (Open/Closed).
+ * Supported inline tags. Adding a new one means adding one handler and one entry here -
+ * [HtmlInlineRenderer] itself never has to change (Open/Closed).
  */
 internal val defaultInlineTagHandlers: Map<String, InlineTagHandler> = mapOf(
-    "b" to boldTagHandler,
-    "strong" to boldTagHandler,
-    "i" to italicTagHandler,
-    "em" to italicTagHandler,
-    "u" to underlineTagHandler,
-    "s" to strikethroughTagHandler,
-    "strike" to strikethroughTagHandler,
-    "del" to strikethroughTagHandler,
-    "sub" to subscriptTagHandler,
-    "sup" to superscriptTagHandler,
-    "br" to lineBreakTagHandler,
-    "a" to linkTagHandler,
+    "b" to StyledTagHandler { it.bold },
+    "strong" to StyledTagHandler { it.bold },
+    "i" to StyledTagHandler { it.italic },
+    "em" to StyledTagHandler { it.italic },
+    "u" to StyledTagHandler { it.underline },
+    "s" to StyledTagHandler { it.strikethrough },
+    "strike" to StyledTagHandler { it.strikethrough },
+    "del" to StyledTagHandler { it.strikethrough },
+    "sub" to StyledTagHandler { it.subscript },
+    "sup" to StyledTagHandler { it.superscript },
+    "br" to LineBreakTagHandler,
+    "a" to LinkTagHandler,
 )
 
 /** Walks an [HtmlNode] tree, dispatching each element to its registered inline handler. */
@@ -92,7 +87,7 @@ internal object HtmlInlineRenderer {
             is HtmlNode.Element -> {
                 val renderChildren: (List<HtmlNode>) -> Unit = { children -> render(builder, children, style, handlers) }
                 val handler = handlers[node.tag]
-                if (handler != null) builder.handler(node, style, renderChildren) else renderChildren(node.children)
+                if (handler != null) handler.render(builder, node, style, renderChildren) else renderChildren(node.children)
             }
         }
     }

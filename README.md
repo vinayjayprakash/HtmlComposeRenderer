@@ -123,7 +123,8 @@ classDiagram
     HtmlRenderContext --> HtmlStyleConfig
 
     class InlineTagHandler {
-        <<typealias, function type>>
+        <<interface>>
+        +render(builder, element, style, renderChildren)
     }
     class HtmlInlineRenderer {
         <<object>>
@@ -133,7 +134,8 @@ classDiagram
     HtmlInlineRenderer ..> HtmlNode
 
     class BlockTagHandler {
-        <<typealias, composable function type>>
+        <<interface>>
+        +Render(element, context, renderChildBlocks)
     }
     class HtmlBlockRenderer {
         <<object>>
@@ -228,7 +230,7 @@ HtmlText(
 
 Adding a tag never requires touching `HtmlInlineRenderer`/`HtmlBlockRenderer`:
 
-1. Write a handler function matching `InlineTagHandler` or `BlockTagHandler`.
+1. Write an object (or class) implementing `InlineTagHandler` or `BlockTagHandler`.
 2. Add one entry to `defaultInlineTagHandlers` or `defaultBlockTagHandlers`.
 
 ## Building
