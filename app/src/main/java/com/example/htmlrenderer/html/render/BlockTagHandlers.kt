@@ -2,7 +2,9 @@ package com.example.htmlrenderer.html.render
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
@@ -30,6 +32,11 @@ private val paragraphTagHandler: BlockTagHandler = { element, context, _ ->
 
 private val lineBreakBlockTagHandler: BlockTagHandler = { _, context, _ ->
     Spacer(Modifier.height(context.style.blockSpacing / 2))
+}
+
+private val horizontalRuleTagHandler: BlockTagHandler = { _, context, _ ->
+    val hr = context.style.horizontalRule
+    HorizontalDivider(color = hr.color, thickness = hr.thickness, modifier = Modifier.padding(vertical = hr.spacing))
 }
 
 private val unorderedListTagHandler: BlockTagHandler = { element, context, _ ->
@@ -62,6 +69,7 @@ internal val defaultBlockTagHandlers: Map<String, BlockTagHandler> = mapOf(
     "ul" to unorderedListTagHandler,
     "ol" to orderedListTagHandler,
     "br" to lineBreakBlockTagHandler,
+    "hr" to horizontalRuleTagHandler,
 )
 
 /**

@@ -5,7 +5,8 @@ A small Android app that renders an HTML-tagged string as native Jetpack Compose
 
 ## Supported tags
 
-`i`, `em`, `b`, `strong`, `u`, `a`, `br`, `p`, `ul`, `ol`, `li`, `h1`–`h4`.
+`i`, `em`, `b`, `strong`, `u`, `s`, `strike`, `del`, `sub`, `sup`, `a`, `br`, `hr`, `p`, `ul`, `ol`,
+`li`, `h1`–`h4`.
 
 Unknown tags fall back to rendering their text content inline instead of failing.
 

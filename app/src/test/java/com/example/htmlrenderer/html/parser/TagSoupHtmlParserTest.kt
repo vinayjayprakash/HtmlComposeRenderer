@@ -95,6 +95,36 @@ class TagSoupHtmlParserTest {
     }
 
     @Test
+    fun `parses strikethrough and its aliases`() {
+        val html = "<p><s>a</s> <strike>b</strike> <del>c</del></p>"
+        val paragraph = parser.parse(html).single() as HtmlNode.Element
+        val tags = paragraph.children.filterIsInstance<HtmlNode.Element>().map { it.tag }
+        assertEquals(listOf("s", "strike", "del"), tags)
+        assertEquals(JsoupHtmlParser().parse(html), parser.parse(html))
+    }
+
+    @Test
+    fun `parses subscript and superscript`() {
+        val html = "<p>H<sub>2</sub>O and x<sup>2</sup></p>"
+        val paragraph = parser.parse(html).single() as HtmlNode.Element
+        val elements = paragraph.children.filterIsInstance<HtmlNode.Element>()
+        assertEquals(listOf("sub", "sup"), elements.map { it.tag })
+        assertEquals("2", (elements[0].children.single() as HtmlNode.Text).value)
+        assertEquals("2", (elements[1].children.single() as HtmlNode.Text).value)
+        assertEquals(JsoupHtmlParser().parse(html), parser.parse(html))
+    }
+
+    @Test
+    fun `parses an unclosed hr the same as a self-closed one`() {
+        val selfClosed = parser.parse("<p>above</p><hr/><p>below</p>")
+        val unclosed = parser.parse("<p>above</p><hr><p>below</p>")
+        assertEquals(selfClosed, unclosed)
+        val hr = selfClosed[1] as HtmlNode.Element
+        assertEquals("hr", hr.tag)
+        assertEquals(emptyList<HtmlNode>(), hr.children)
+    }
+
+    @Test
     fun `matches JsoupHtmlParser output for the full supported-tag sample`() {
         val html = """
             <h1>Welcome</h1>

@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
@@ -19,6 +20,9 @@ data class HtmlStyleConfig(
     val bold: SpanStyle = SpanStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp),
     val italic: SpanStyle = SpanStyle(fontStyle = FontStyle.Italic),
     val underline: SpanStyle = SpanStyle(textDecoration = TextDecoration.Underline),
+    val strikethrough: SpanStyle = SpanStyle(textDecoration = TextDecoration.LineThrough),
+    val subscript: SpanStyle = SpanStyle(baselineShift = BaselineShift.Subscript, fontSize = 12.sp),
+    val superscript: SpanStyle = SpanStyle(baselineShift = BaselineShift.Superscript, fontSize = 12.sp),
     val link: SpanStyle = SpanStyle(color = Color(0xFF1565C0), textDecoration = TextDecoration.Underline),
     val h1: SpanStyle = SpanStyle(fontSize = 30.sp, fontWeight = FontWeight.Bold),
     val h2: SpanStyle = SpanStyle(fontSize = 26.sp, fontWeight = FontWeight.Bold),
@@ -27,6 +31,14 @@ data class HtmlStyleConfig(
     val blockSpacing: Dp = 8.dp,
     val unorderedList: ListStyle = ListStyle(marker = ListMarker.Bullet()),
     val orderedList: ListStyle = ListStyle(marker = ListMarker.Number()),
+    val horizontalRule: HrStyle = HrStyle(),
+)
+
+/** Styling for an `<hr>` block: line color, thickness, and vertical spacing around it. */
+data class HrStyle(
+    val color: Color = Color.LightGray,
+    val thickness: Dp = 1.dp,
+    val spacing: Dp = 8.dp,
 )
 
 /** Styling for a `<ul>`/`<ol>` block: marker look, spacing between items, and indent per nesting level. */

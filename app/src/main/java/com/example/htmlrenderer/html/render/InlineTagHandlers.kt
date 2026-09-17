@@ -30,6 +30,18 @@ private val underlineTagHandler: InlineTagHandler = { element, style, renderChil
     withStyle(style.underline) { renderChildren(element.children) }
 }
 
+private val strikethroughTagHandler: InlineTagHandler = { element, style, renderChildren ->
+    withStyle(style.strikethrough) { renderChildren(element.children) }
+}
+
+private val subscriptTagHandler: InlineTagHandler = { element, style, renderChildren ->
+    withStyle(style.subscript) { renderChildren(element.children) }
+}
+
+private val superscriptTagHandler: InlineTagHandler = { element, style, renderChildren ->
+    withStyle(style.superscript) { renderChildren(element.children) }
+}
+
 private val lineBreakTagHandler: InlineTagHandler = { _, _, _ -> append("\n") }
 
 private val linkTagHandler: InlineTagHandler = { element, style, renderChildren ->
@@ -49,6 +61,11 @@ internal val defaultInlineTagHandlers: Map<String, InlineTagHandler> = mapOf(
     "i" to italicTagHandler,
     "em" to italicTagHandler,
     "u" to underlineTagHandler,
+    "s" to strikethroughTagHandler,
+    "strike" to strikethroughTagHandler,
+    "del" to strikethroughTagHandler,
+    "sub" to subscriptTagHandler,
+    "sup" to superscriptTagHandler,
     "br" to lineBreakTagHandler,
     "a" to linkTagHandler,
 )

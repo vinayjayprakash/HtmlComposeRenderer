@@ -14,12 +14,14 @@ import com.example.htmlrenderer.html.style.HtmlStyleConfig
 private val defaultHtmlParser: HtmlParser = TagSoupHtmlParser()
 
 /**
- * Renders a small HTML fragment (i, em, b, strong, u, a, br, p, ul, ol, li, h1-h4) as native
- * Compose content. Unsupported tags fall back to rendering their text content inline.
+ * Renders a small HTML fragment (i, em, b, strong, u, s, strike, del, sub, sup, a, br, hr, p, ul,
+ * ol, li, h1-h4) as native Compose content. Unsupported tags fall back to rendering their text
+ * content inline.
  *
  * This composable only wires three independent layers together:
  * - [parser] turns the HTML string into a neutral [com.example.htmlrenderer.html.model.HtmlNode]
- *   tree ([JsoupHtmlParser] by default - swap it for any other [HtmlParser] implementation).
+ *   tree ([TagSoupHtmlParser] by default - swap it for any other [HtmlParser] implementation,
+ *   e.g. [JsoupHtmlParser]).
  * - [style] configures how each tag looks.
  * - [com.example.htmlrenderer.html.render.HtmlBlockRenderer] walks the tree and draws it,
  *   dispatching each tag to a registered handler (see `BlockTagHandlers.kt` / `InlineTagHandlers.kt`).

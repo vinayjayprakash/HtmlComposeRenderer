@@ -37,9 +37,10 @@ class MainActivity : ComponentActivity() {
 }
 
 // Covers every scenario the renderer needs to handle: bare top-level text with no wrapping tag
-// (both leading and trailing), all four heading levels, every inline tag (b/strong, i/em, u, a,
-// br - both <br/> and unclosed <br>), an unsupported tag falling back to plain text, and
-// unordered/ordered lists with nested lists and inline formatting inside list items.
+// (both leading and trailing), all four heading levels, every inline tag (b/strong, i/em, u,
+// s/strike/del, sub, sup, a, br - both <br/> and unclosed <br>), an <hr> rule, an unsupported tag
+// falling back to plain text, and unordered/ordered lists with nested lists and inline formatting
+// inside list items.
 private val sampleHtml = """
     This is a <b>bold</b> word, an <i>italic</i> word, and an <u>underlined</u> word, with no
     wrapping tag at all - just like real-world content that starts directly with text.
@@ -47,10 +48,14 @@ private val sampleHtml = """
     <h1>Welcome</h1>
     <p>This is a <b>bold</b> word, an <i>italic</i> word, and an <u>underlined</u> word.</p>
     <p><strong>strong</strong> and <em>em</em> are styled the same as <b>b</b> and <i>i</i>.</p>
+    <p>Strikethrough works via <s>s</s>, <strike>strike</strike>, or <del>del</del> - and
+    formulas can use <sub>subscript</sub> and <sup>superscript</sup>, e.g. H<sub>2</sub>O or
+    x<sup>2</sup>.</p>
     <p>Here is a <a href="https://www.anthropic.com">link to Anthropic</a>.<br/>This line follows
     a self-closed br tag.<br>This line follows an unclosed br tag.</p>
     <p>An unsupported tag like <mark>this highlighted phrase</mark> still renders its text, just
     without special styling, instead of failing.</p>
+    <hr/>
     <h2>Unordered list</h2>
     <ul>
         <li>First item</li>
@@ -67,6 +72,7 @@ private val sampleHtml = """
         <li>Step one</li>
         <li>Step two</li>
     </ol>
+    <hr>
     <h4>Loose text after a list</h4>
     Bare text can also follow other block content, mixing <b>bold</b> and <i>italic</i> words
     without a wrapping paragraph.
