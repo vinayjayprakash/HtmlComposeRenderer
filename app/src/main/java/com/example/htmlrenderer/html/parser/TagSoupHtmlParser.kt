@@ -63,11 +63,11 @@ private class TreeBuildingHandler : DefaultHandler() {
         val element = HtmlNode.Element(frame.tag, frame.attributes, frame.children)
         if (frame.tag == "body") body = element
         val parent = stack.lastOrNull()
-        if (parent != null) parent.children.add(element)
+        parent?.children?.add(element)
     }
 
     override fun characters(ch: CharArray, start: Int, length: Int) {
-        text.append(ch, start, length)
+        text.appendRange(ch, start, start + length)
     }
 
     private fun flushText() {

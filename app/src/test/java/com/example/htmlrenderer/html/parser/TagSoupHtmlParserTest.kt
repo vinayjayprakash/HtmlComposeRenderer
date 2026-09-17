@@ -67,6 +67,17 @@ class TagSoupHtmlParserTest {
     }
 
     @Test
+    fun `parses bare top-level text with no wrapping block tag`() {
+        val html = "This is a <b>bold</b> word, an <i>italic</i> word, and an <u>underlined</u> word."
+        val nodes = parser.parse(html)
+        assertEquals(
+            listOf("This is a ", "b", " word, an ", "i", " word, and an ", "u", " word."),
+            nodes.map { if (it is HtmlNode.Element) it.tag else (it as HtmlNode.Text).value },
+        )
+        assertEquals(JsoupHtmlParser().parse(html), nodes)
+    }
+
+    @Test
     fun `matches JsoupHtmlParser output for the full supported-tag sample`() {
         val html = """
             <h1>Welcome</h1>

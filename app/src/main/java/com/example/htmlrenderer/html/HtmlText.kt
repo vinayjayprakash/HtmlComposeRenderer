@@ -6,11 +6,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.example.htmlrenderer.html.parser.HtmlParser
 import com.example.htmlrenderer.html.parser.JsoupHtmlParser
+import com.example.htmlrenderer.html.parser.TagSoupHtmlParser
 import com.example.htmlrenderer.html.render.HtmlBlockRenderer
 import com.example.htmlrenderer.html.render.HtmlRenderContext
 import com.example.htmlrenderer.html.style.HtmlStyleConfig
 
-private val defaultHtmlParser: HtmlParser = JsoupHtmlParser()
+private val defaultHtmlParser: HtmlParser = TagSoupHtmlParser()
 
 /**
  * Renders a small HTML fragment (i, em, b, strong, u, a, br, p, ul, ol, li, h1-h4) as native
