@@ -17,7 +17,7 @@ import com.mj.htmlrender.html.style.HtmlStyleConfig
 /**
  * Strategy for rendering one block-level element tag. Implement [Render] in an object (or class)
  * and register it in [defaultBlockTagHandlers]. [renderChildBlocks] recurses back into
- * [HtmlBlockRenderer] for any nested block content a handler needs to delegate (list handlers
+ * [HtmlRenderer] for any nested block content a handler needs to delegate (list handlers
  * use this for nested `<ul>`/`<ol>`).
  */
 internal interface BlockTagHandler {
@@ -79,7 +79,7 @@ private object OrderedListTagHandler : BlockTagHandler {
 
 /**
  * Supported block tags. Adding a new one means adding one handler and one entry here -
- * [HtmlBlockRenderer] itself never has to change (Open/Closed).
+ * [HtmlRenderer] itself never has to change (Open/Closed).
  */
 internal val defaultBlockTagHandlers: Map<String, BlockTagHandler> = mapOf(
     "p" to ParagraphTagHandler,
@@ -127,9 +127,9 @@ private fun groupIntoChunks(nodes: List<HtmlNode>, handlers: Map<String, BlockTa
 }
 
 /** Walks a top-level [HtmlNode] list, dispatching each element to its registered block handler. */
-internal object HtmlBlockRenderer {
+internal object HtmlRenderer {
     @Composable
-    fun RenderAll(
+    fun Render(
         nodes: List<HtmlNode>,
         context: HtmlRenderContext,
         handlers: Map<String, BlockTagHandler> = defaultBlockTagHandlers,
@@ -138,7 +138,7 @@ internal object HtmlBlockRenderer {
             when (chunk) {
                 is RenderChunk.Block -> {
                     val handler = handlers.getValue(chunk.element.tag)
-                    handler.Render(chunk.element, context) { children -> RenderAll(children, context, handlers) }
+                    handler.Render(chunk.element, context) { children -> Render(children, context, handlers) }
                 }
                 is RenderChunk.Implicit -> RenderImplicitParagraph(chunk.nodes, context)
             }

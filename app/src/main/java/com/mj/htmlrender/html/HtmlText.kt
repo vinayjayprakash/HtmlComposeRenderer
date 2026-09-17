@@ -6,8 +6,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.mj.htmlrender.html.parser.HtmlParser
 import com.mj.htmlrender.html.parser.TagSoupHtmlParser
-import com.mj.htmlrender.html.render.HtmlBlockRenderer
 import com.mj.htmlrender.html.render.HtmlRenderContext
+import com.mj.htmlrender.html.render.HtmlRenderer
 import com.mj.htmlrender.html.style.HtmlStyleConfig
 
 private val defaultHtmlParser: HtmlParser = TagSoupHtmlParser()
@@ -21,7 +21,7 @@ private val defaultHtmlParser: HtmlParser = TagSoupHtmlParser()
  * - [parser] turns the HTML string into a neutral [com.mj.htmlrender.html.model.HtmlNode]
  *   tree ([TagSoupHtmlParser] by default - swap it for any other [HtmlParser] implementation).
  * - [style] configures how each tag looks.
- * - [com.mj.htmlrender.html.render.HtmlBlockRenderer] walks the tree and draws it,
+ * - [com.mj.htmlrender.html.render.HtmlRenderer] walks the tree and draws it,
  *   dispatching each tag to a registered handler (see `BlockTagHandlers.kt` / `InlineTagHandlers.kt`).
  */
 @Composable
@@ -34,6 +34,6 @@ fun HtmlText(
 ) {
     val nodes = remember(htmlString, parser) { parser.parse(htmlString) }
     Column(modifier = modifier) {
-        HtmlBlockRenderer.RenderAll(nodes, HtmlRenderContext(style, onLinkClick))
+        HtmlRenderer.Render(nodes, HtmlRenderContext(style, onLinkClick))
     }
 }

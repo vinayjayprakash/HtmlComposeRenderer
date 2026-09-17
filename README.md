@@ -137,14 +137,14 @@ classDiagram
         <<interface>>
         +Render(element, context, renderChildBlocks)
     }
-    class HtmlBlockRenderer {
+    class HtmlRenderer {
         <<object>>
-        +RenderAll(nodes, context, handlers)
+        +Render(nodes, context, handlers)
     }
-    HtmlBlockRenderer ..> BlockTagHandler : dispatches via tag lookup
-    HtmlBlockRenderer ..> HtmlNode
-    HtmlBlockRenderer ..> HtmlRenderContext
-    HtmlBlockRenderer ..> HtmlInlineRenderer : renders inline content
+    HtmlRenderer ..> BlockTagHandler : dispatches via tag lookup
+    HtmlRenderer ..> HtmlNode
+    HtmlRenderer ..> HtmlRenderContext
+    HtmlRenderer ..> HtmlInlineRenderer : renders inline content
 
     class ListTagHandlers {
         <<file>>
@@ -159,7 +159,7 @@ classDiagram
         +HtmlText(htmlString, modifier, style, onLinkClick, parser)
     }
     HtmlText --> HtmlParser : parses htmlString
-    HtmlText --> HtmlBlockRenderer : renders parsed tree
+    HtmlText --> HtmlRenderer : renders parsed tree
     HtmlText --> HtmlStyleConfig
 ```
 
@@ -173,7 +173,7 @@ flowchart TD
     STYLE["HtmlStyleConfig / ListStyle / ListMarker\n(caller-supplied)"] -.-> D
     LINK["onLinkClick callback\n(caller-supplied)"] -.-> D
 
-    C --> D["HtmlBlockRenderer.RenderAll"]
+    C --> D["HtmlRenderer.Render"]
     D --> E{"Node type?"}
 
     E -->|"bare Text"| F["Render as paragraph"]
@@ -228,7 +228,7 @@ HtmlText(
 
 ## Extending: adding a new tag
 
-Adding a tag never requires touching `HtmlInlineRenderer`/`HtmlBlockRenderer`:
+Adding a tag never requires touching `HtmlInlineRenderer`/`HtmlRenderer`:
 
 1. Write an object (or class) implementing `InlineTagHandler` or `BlockTagHandler`.
 2. Add one entry to `defaultInlineTagHandlers` or `defaultBlockTagHandlers`.
