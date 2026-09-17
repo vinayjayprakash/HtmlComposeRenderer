@@ -1,6 +1,6 @@
-package com.example.htmlrenderer.html.parser
+package com.mj.htmlrender.html.parser
 
-import com.example.htmlrenderer.html.model.HtmlNode
+import com.mj.htmlrender.html.model.HtmlNode
 import java.io.StringReader
 import org.ccil.cowan.tagsoup.Parser as TagSoupSaxParser
 import org.xml.sax.Attributes

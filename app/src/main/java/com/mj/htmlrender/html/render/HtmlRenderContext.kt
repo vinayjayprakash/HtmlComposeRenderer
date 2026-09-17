@@ -1,6 +1,6 @@
-package com.example.htmlrenderer.html.render
+package com.mj.htmlrender.html.render
 
-import com.example.htmlrenderer.html.style.HtmlStyleConfig
+import com.mj.htmlrender.html.style.HtmlStyleConfig
 
 /** Everything a tag handler needs besides the node it is rendering. */
 data class HtmlRenderContext(

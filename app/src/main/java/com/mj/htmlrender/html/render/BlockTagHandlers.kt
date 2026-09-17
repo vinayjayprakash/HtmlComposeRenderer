@@ -1,4 +1,4 @@
-package com.example.htmlrenderer.html.render
+package com.mj.htmlrender.html.render
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -11,8 +11,8 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
-import com.example.htmlrenderer.html.model.HtmlNode
-import com.example.htmlrenderer.html.style.HtmlStyleConfig
+import com.mj.htmlrender.html.model.HtmlNode
+import com.mj.htmlrender.html.style.HtmlStyleConfig
 
 /**
  * Strategy for rendering one block-level element tag. [renderChildBlocks] recurses back into

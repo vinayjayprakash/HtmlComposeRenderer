@@ -1,9 +1,9 @@
-package com.example.htmlrenderer.html.render
+package com.mj.htmlrender.html.render
 
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.withStyle
-import com.example.htmlrenderer.html.model.HtmlNode
-import com.example.htmlrenderer.html.style.HtmlStyleConfig
+import com.mj.htmlrender.html.model.HtmlNode
+import com.mj.htmlrender.html.style.HtmlStyleConfig
 
 internal const val LINK_ANNOTATION_TAG = "URL"
 

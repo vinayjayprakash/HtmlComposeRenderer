@@ -1,6 +1,6 @@
-package com.example.htmlrenderer.html.parser
+package com.mj.htmlrender.html.parser
 
-import com.example.htmlrenderer.html.model.HtmlNode
+import com.mj.htmlrender.html.model.HtmlNode
 
 /**
  * Parses an HTML fragment string into a neutral [HtmlNode] tree.

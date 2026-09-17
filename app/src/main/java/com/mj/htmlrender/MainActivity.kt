@@ -1,4 +1,4 @@
-package com.example.htmlrenderer
+package com.mj.htmlrender
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -18,10 +18,10 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.htmlrenderer.html.HtmlText
-import com.example.htmlrenderer.html.style.HtmlStyleConfig
-import com.example.htmlrenderer.html.style.ListMarker
-import com.example.htmlrenderer.html.style.ListStyle
+import com.mj.htmlrender.html.HtmlText
+import com.mj.htmlrender.html.style.HtmlStyleConfig
+import com.mj.htmlrender.html.style.ListMarker
+import com.mj.htmlrender.html.style.ListStyle
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

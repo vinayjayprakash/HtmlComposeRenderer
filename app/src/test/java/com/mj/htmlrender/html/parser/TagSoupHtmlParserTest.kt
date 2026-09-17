@@ -1,6 +1,6 @@
-package com.example.htmlrenderer.html.parser
+package com.mj.htmlrender.html.parser
 
-import com.example.htmlrenderer.html.model.HtmlNode
+import com.mj.htmlrender.html.model.HtmlNode
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -170,7 +170,7 @@ class TagSoupHtmlParserTest {
 
     /**
      * Drops whitespace-only text nodes recursively - TagSoup preserves the raw newline/indentation
-     * between block tags as its own text node, but [HtmlBlockRenderer][com.example.htmlrenderer.html.render.HtmlBlockRenderer]
+     * between block tags as its own text node, but [HtmlBlockRenderer][com.mj.htmlrender.html.render.HtmlBlockRenderer]
      * ignores blank text nodes, so this reflects the tree the renderer actually sees.
      */
     private fun HtmlNode.normalized(): HtmlNode = when (this) {

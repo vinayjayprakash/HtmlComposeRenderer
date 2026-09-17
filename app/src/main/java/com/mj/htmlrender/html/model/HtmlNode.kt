@@ -1,4 +1,4 @@
-package com.example.htmlrenderer.html.model
+package com.mj.htmlrender.html.model
 
 /**
  * A tag-agnostic representation of a parsed HTML fragment. Nothing outside the `parser`

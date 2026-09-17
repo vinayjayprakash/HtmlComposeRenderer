@@ -1,4 +1,4 @@
-package com.example.htmlrenderer.html.render
+package com.mj.htmlrender.html.render
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.example.htmlrenderer.html.model.HtmlNode
-import com.example.htmlrenderer.html.style.ListMarker
-import com.example.htmlrenderer.html.style.ListStyle
+import com.mj.htmlrender.html.model.HtmlNode
+import com.mj.htmlrender.html.style.ListMarker
+import com.mj.htmlrender.html.style.ListStyle
 
 @Composable
 internal fun RenderList(

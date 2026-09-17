@@ -1,14 +1,14 @@
-package com.example.htmlrenderer.html
+package com.mj.htmlrender.html
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import com.example.htmlrenderer.html.parser.HtmlParser
-import com.example.htmlrenderer.html.parser.TagSoupHtmlParser
-import com.example.htmlrenderer.html.render.HtmlBlockRenderer
-import com.example.htmlrenderer.html.render.HtmlRenderContext
-import com.example.htmlrenderer.html.style.HtmlStyleConfig
+import com.mj.htmlrender.html.parser.HtmlParser
+import com.mj.htmlrender.html.parser.TagSoupHtmlParser
+import com.mj.htmlrender.html.render.HtmlBlockRenderer
+import com.mj.htmlrender.html.render.HtmlRenderContext
+import com.mj.htmlrender.html.style.HtmlStyleConfig
 
 private val defaultHtmlParser: HtmlParser = TagSoupHtmlParser()
 
@@ -18,10 +18,10 @@ private val defaultHtmlParser: HtmlParser = TagSoupHtmlParser()
  * content inline.
  *
  * This composable only wires three independent layers together:
- * - [parser] turns the HTML string into a neutral [com.example.htmlrenderer.html.model.HtmlNode]
+ * - [parser] turns the HTML string into a neutral [com.mj.htmlrender.html.model.HtmlNode]
  *   tree ([TagSoupHtmlParser] by default - swap it for any other [HtmlParser] implementation).
  * - [style] configures how each tag looks.
- * - [com.example.htmlrenderer.html.render.HtmlBlockRenderer] walks the tree and draws it,
+ * - [com.mj.htmlrender.html.render.HtmlBlockRenderer] walks the tree and draws it,
  *   dispatching each tag to a registered handler (see `BlockTagHandlers.kt` / `InlineTagHandlers.kt`).
  */
 @Composable

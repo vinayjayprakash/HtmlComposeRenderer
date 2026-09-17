@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.htmlrenderer"
+    namespace = "com.mj.htmlrender"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.htmlrenderer"
+        applicationId = "com.mj.htmlrender"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

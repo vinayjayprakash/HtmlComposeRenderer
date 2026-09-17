@@ -1,4 +1,4 @@
-package com.example.htmlrenderer.html.style
+package com.mj.htmlrender.html.style
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle

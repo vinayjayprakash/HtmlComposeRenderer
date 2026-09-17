@@ -25,7 +25,7 @@ Unknown tags fall back to rendering their text content inline instead of failing
 ## Project structure
 
 ```
-app/src/main/java/com/example/htmlrenderer/
+app/src/main/java/com/mj/htmlrender/
 ├── MainActivity.kt            - demo screen with sample HTML + custom style
 └── html/
     ├── HtmlText.kt             - public @Composable entry point, wires the layers together
