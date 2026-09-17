@@ -18,7 +18,8 @@ Unknown tags fall back to rendering their text content inline instead of failing
 - Custom bullet/number color, symbol, and spacing for `<ul>`/`<ol>` via `ListStyle`/`ListMarker`
   (nested lists are supported and indent automatically).
 - `<a>` clicks are exposed via an `onLinkClick(url)` callback.
-- The HTML parsing library (Jsoup by default) is swappable without touching any rendering code.
+- The HTML parsing library (Jsoup by default) is swappable without touching any rendering code -
+  a TagSoup-backed `HtmlParser` implementation is included as well (`TagSoupHtmlParser`).
 
 ## Project structure
 
@@ -30,7 +31,8 @@ app/src/main/java/com/example/htmlrenderer/
     ├── model/HtmlNode.kt       - library-agnostic parse tree (Text / Element)
     ├── parser/
     │   ├── HtmlParser.kt       - parsing abstraction
-    │   └── JsoupHtmlParser.kt  - Jsoup-backed implementation (only file that imports Jsoup)
+    │   ├── JsoupHtmlParser.kt  - Jsoup-backed implementation (only file that imports Jsoup)
+    │   └── TagSoupHtmlParser.kt- TagSoup-backed implementation (only file that imports TagSoup/SAX)
     ├── style/HtmlStyleConfig.kt- HtmlStyleConfig, ListStyle, ListMarker
     └── render/
         ├── HtmlRenderContext.kt
@@ -72,8 +74,13 @@ classDiagram
     class JsoupHtmlParser {
         +parse(String) List~HtmlNode~
     }
+    class TagSoupHtmlParser {
+        +parse(String) List~HtmlNode~
+    }
     HtmlParser <|.. JsoupHtmlParser
+    HtmlParser <|.. TagSoupHtmlParser
     JsoupHtmlParser ..> HtmlNode : builds
+    TagSoupHtmlParser ..> HtmlNode : builds
 
     class HtmlStyleConfig {
         +SpanStyle paragraph
