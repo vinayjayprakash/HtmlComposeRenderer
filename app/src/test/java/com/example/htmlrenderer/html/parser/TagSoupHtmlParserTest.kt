@@ -78,6 +78,23 @@ class TagSoupHtmlParserTest {
     }
 
     @Test
+    fun `parses an unrecognized HTML5 tag as a generic element, not dropped`() {
+        val html = "<p>An unsupported tag like <mark>this highlighted phrase</mark> still renders its text.</p>"
+        val paragraph = parser.parse(html).single() as HtmlNode.Element
+        val mark = paragraph.children.filterIsInstance<HtmlNode.Element>().single()
+        assertEquals("mark", mark.tag)
+        assertEquals("this highlighted phrase", (mark.children.single() as HtmlNode.Text).value)
+    }
+
+    @Test
+    fun `parses an unclosed void br tag the same as a self-closed one`() {
+        val html = "<p>line one<br>line two</p>"
+        val selfClosed = parser.parse("<p>line one<br/>line two</p>")
+        val unclosed = parser.parse(html)
+        assertEquals(selfClosed, unclosed)
+    }
+
+    @Test
     fun `matches JsoupHtmlParser output for the full supported-tag sample`() {
         val html = """
             <h1>Welcome</h1>
