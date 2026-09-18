@@ -36,9 +36,12 @@ app/src/main/java/com/mj/htmlrender/
     ├── style/HtmlStyleConfig.kt- HtmlStyleConfig, ListStyle, ListMarker
     └── render/
         ├── HtmlRenderContext.kt
-        ├── InlineTagHandlers.kt - b/strong/i/em/u/a/br strategies + dispatcher
-        ├── BlockTagHandlers.kt  - p/h1-h4/ul/ol/br strategies + dispatcher
-        └── ListTagHandlers.kt   - ul/ol/li rendering: markers, nesting
+        ├── InlineTagHandlers.kt  - InlineTagHandler + b/strong/i/em/u/a/br strategies + registry
+        ├── HtmlInlineRenderer.kt - dispatches inline nodes to their InlineTagHandler
+        ├── BlockTagHandlers.kt   - BlockTagHandler + p/h1-h4/ul/ol/br strategies + registry
+        ├── HtmlRenderer.kt       - dispatches block nodes to their BlockTagHandler
+        ├── HtmlParagraph.kt      - shared HtmlParagraph composable + inline-AnnotatedString helper
+        └── ListTagHandlers.kt    - ul/ol/li rendering: markers, nesting
 ```
 
 ## Architecture
@@ -177,12 +180,13 @@ flowchart TD
     D --> E{"Node type?"}
 
     E -->|"bare Text"| F["Render as paragraph"]
-    E -->|"Element, known tag\n(p / h1-h4 / ul / ol / br)"| G["Look up BlockTagHandler in map"]
+    E -->|"Element, known tag\n(p / h1-h4 / ul / ol / br / hr)"| G["Look up BlockTagHandler in map"]
     E -->|"Element, unknown tag"| F
 
     G -->|"p / h1-h4"| H["Build paragraph:\nSpanStyle + inline content"]
     G -->|"ul / ol"| R["RenderList: walk &lt;li&gt; children"]
     G -->|"br"| SP["Emit vertical Spacer"]
+    G -->|"hr"| HD["Emit HorizontalDivider"]
 
     R --> RI["RenderListItem"]
     RI --> RM["ListMarkerText\n(bullet/number colored via ListStyle.marker)"]
