@@ -18,7 +18,7 @@ internal object HtmlRenderer {
             when (chunk) {
                 is RenderChunk.Block -> {
                     val handler = handlers.getValue(chunk.element.tag)
-                    handler.Render(chunk.element, context) { children -> Render(children, context, handlers) }
+                    handler(chunk.element, context) { children -> Render(children, context, handlers) }
                 }
                 is RenderChunk.Implicit -> RenderImplicitParagraph(chunk.nodes, context)
             }

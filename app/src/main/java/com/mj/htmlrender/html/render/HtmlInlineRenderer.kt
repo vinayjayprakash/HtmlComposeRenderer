@@ -26,7 +26,7 @@ internal object HtmlInlineRenderer {
             is HtmlNode.Element -> {
                 val renderChildren: (List<HtmlNode>) -> Unit = { children -> render(builder, children, style, handlers) }
                 val handler = handlers[node.tag]
-                if (handler != null) handler.render(builder, node, style, renderChildren) else renderChildren(node.children)
+                if (handler != null) builder.handler(node, style, renderChildren) else renderChildren(node.children)
             }
         }
     }
