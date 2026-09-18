@@ -6,6 +6,35 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.mj.htmlrender.html.model.HtmlNode
 
+/** Walks a top-level [HtmlNode] list, dispatching each element to its registered block handler. */
+internal object HtmlRenderer {
+    @Composable
+    fun Render(
+        nodes: List<HtmlNode>,
+        context: HtmlRenderContext,
+        handlers: Map<String, BlockTagHandler> = defaultBlockTagHandlers,
+    ) {
+        groupIntoChunks(nodes, handlers).forEach { chunk ->
+            when (chunk) {
+                is RenderChunk.Block -> {
+                    val handler = handlers.getValue(chunk.element.tag)
+                    handler.Render(chunk.element, context) { children -> Render(children, context, handlers) }
+                }
+                is RenderChunk.Implicit -> RenderImplicitParagraph(chunk.nodes, context)
+            }
+        }
+    }
+
+    @Composable
+    private fun RenderImplicitParagraph(nodes: List<HtmlNode>, context: HtmlRenderContext) {
+        val annotated = inlineAnnotatedString(context.style.paragraph, nodes, context.style)
+        if (annotated.text.isNotBlank()) {
+            HtmlParagraph(annotated, context.onLinkClick)
+            Spacer(Modifier.height(context.style.blockSpacing))
+        }
+    }
+}
+
 /**
  * One piece of top-level content, grouped for rendering: either a node whose tag has its own
  * [BlockTagHandler], or a run of consecutive siblings with no block tag of their own (bare text
@@ -37,33 +66,4 @@ private fun groupIntoChunks(nodes: List<HtmlNode>, handlers: Map<String, BlockTa
     }
     flushRun()
     return chunks
-}
-
-/** Walks a top-level [HtmlNode] list, dispatching each element to its registered block handler. */
-internal object HtmlRenderer {
-    @Composable
-    fun Render(
-        nodes: List<HtmlNode>,
-        context: HtmlRenderContext,
-        handlers: Map<String, BlockTagHandler> = defaultBlockTagHandlers,
-    ) {
-        groupIntoChunks(nodes, handlers).forEach { chunk ->
-            when (chunk) {
-                is RenderChunk.Block -> {
-                    val handler = handlers.getValue(chunk.element.tag)
-                    handler.Render(chunk.element, context) { children -> Render(children, context, handlers) }
-                }
-                is RenderChunk.Implicit -> RenderImplicitParagraph(chunk.nodes, context)
-            }
-        }
-    }
-
-    @Composable
-    private fun RenderImplicitParagraph(nodes: List<HtmlNode>, context: HtmlRenderContext) {
-        val annotated = inlineAnnotatedString(context.style.paragraph, nodes, context.style)
-        if (annotated.text.isNotBlank()) {
-            HtmlParagraph(annotated, context.onLinkClick)
-            Spacer(Modifier.height(context.style.blockSpacing))
-        }
-    }
 }
